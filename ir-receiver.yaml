@@ -1,0 +1,43 @@
+esphome:
+  name: ir-receiver
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+
+ota:
+  password: "6cac31e5b33a2b4b4c08766c4899b83f"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Ir-Receiver Fallback Hotspot"
+    password: "5jv77gEZI9Ta"
+
+captive_portal:
+
+web_server:
+  port: 80
+  version: 2
+  include_internal: true
+  ota: false
+  auth:
+    username: admin
+    password: !secret web_server_password    
+
+remote_receiver:
+  pin: 
+    number: GPIO32
+    inverted: true
+  dump: all  

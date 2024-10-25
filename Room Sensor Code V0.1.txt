@@ -12,6 +12,7 @@ wifi:
 
 # Enable logging
 logger:
+    level: DEBUG
 
 # Enable Home Assistant API
 api:
@@ -20,6 +21,13 @@ api:
 ota:
   platform: esphome
   password: !secret ota_password
+
+web_server:
+  port: 80
+  auth:
+    username: admin
+    password: !secret web_password
+
 
 # I2C Bus setup (for AM2320 and BH1750 sensors)
 i2c:
@@ -184,6 +192,17 @@ remote_transmitter:
   carrier_duty_percent: 50%
 
 switch:
+#Pause Switch Logging for IR Capture
+  - platform: template
+    name: "Pause Logging"
+    id: logging_switch
+    optimistic: true
+    turn_on_action:
+      - logger.set_level: NONE  # Disable logging when turned on
+    turn_off_action:
+      - logger.set_level: DEBUG  # Enable logging when turned off
+
+#IR Blaster Commands
   - platform: template
     name: "${device_name} Send IR Command"
     turn_on_action:
@@ -192,3 +211,16 @@ switch:
         repeat:
           times: 3
           wait_time: 30ms
+
+##Pause Interval Logging for IR Capture
+interval:
+  - interval: 10s  # Log data every 10 seconds (you can change this)
+    then:
+      if:
+        condition:
+          - switch.is_off: logging_switch  # Only log if the switch is off
+        then:
+          - logger.log:
+              level: INFO
+              format: "Logging data while switch is OFF."
+
