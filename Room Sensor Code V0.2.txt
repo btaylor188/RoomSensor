@@ -39,7 +39,6 @@ i2c:
   scl: GPIO10
   scan: true
   id: bus_a
-  frequency: 50kHz
   
 #mmWave Sensor
 ld2410:
