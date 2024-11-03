@@ -16,7 +16,8 @@ logger:
 
 # Enable Home Assistant API
 api:
-  password: !secret api_password
+  encryption:
+    key: !secret encryption
 
 ota:
   platform: esphome
@@ -29,7 +30,7 @@ web_server:
     password: !secret web_password
 
 
-# I2C Bus setup (for AM2320 and BH1750 sensors)
+# I2C Bus setup (for BMP280 and BH1750 sensors)
 i2c:
   sda: GPIO8
   scl: GPIO10
@@ -172,12 +173,14 @@ sensor:
       still_energy:
         name: "${device_name} g8 still energy"
 
-#AM2320 Temp and Humidity
-  - platform: am2320
+# BMP280 Temperature and Pressure Sensor
+  - platform: bmp280_i2c
     temperature:
       name: "${device_name} Room Temperature"
-    humidity:
-      name: "${device_name} Room Humidity"
+      oversampling: 16x
+    pressure:
+      name: "${device_name} Room Pressure"
+    address: 0x76  # Common I2C address for BMP280; change to 0x77 if needed
     update_interval: 60s
 
 # BH1750 Light Sensor
